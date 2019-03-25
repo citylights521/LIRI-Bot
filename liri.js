@@ -62,7 +62,52 @@ else {
 // Date of the Event (use moment to format this as "MM/DD/YYYY")
 function concertThis(artistBand) {
     console.log(artistBand + " is the cooles band");
+    var url = "https://rest.bandsintown.com/artists/" + artistBand + "/events?app_id=codingbootcamp";
 
+
+
+    axios
+        .get(url)
+        .then(function (response) {
+            // If the axios was successful...
+            // Then log the body from the site!
+            for (let i = 0; i < response.data.length; i++) {
+                const concert = response.data[i];
+
+                var venue = concert.venue;
+
+                console.log(venue.name);
+
+                if (venue.region) {
+                    console.log(venue.city + ", " + venue.region + ", " + venue.country);
+                }
+                else {
+                    console.log(venue.city + ", " + venue.country);
+                }
+
+                console.log(concert.datetime);
+                console.log();
+
+            }
+            // console.log(response.data);
+        })
+        .catch(function (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an object that comes back with details pertaining to the error that occurred.
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+            }
+            console.log(error.config);
+        });
 }
 
 // node liri.js spotify-this-song '<song name here>'
@@ -79,7 +124,7 @@ function concertThis(artistBand) {
 // Step Three: Once logged in, navigate to https://developer.spotify.com/my-applications/#!/applications/create to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
 // Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the node-spotify-api package.
 function spotifyThisSong(songName) {
-console.log(songName + " is the song name");
+    console.log(songName + " is the song name");
 
 }
 
@@ -107,5 +152,5 @@ function movieThis(moveName) {
 // It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 // Edit the text in random.txt to test out the feature for movie-this and concert-this.
 function doWhatItSays() {
-console.log("doing it.")
+    console.log("doing it.")
 }
