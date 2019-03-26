@@ -1,8 +1,18 @@
 require("dotenv").config();
 
+// Code required to import the keys.js file
+var keys = require("./keys.js");
+
 // Grab axios package
 var axios = require("axios");
 
+var Spotify = require('node-spotify-api');
+
+// This code enables access to keys information
+var spotify = new Spotify(keys.spotify);
+
+
+// DO NOT TOUCH -------:
 if (process.argv.length > 4 || process.argv.length < 3) {
     console.error("This is not a valid entry.");
     return;
@@ -18,24 +28,22 @@ var userInput = process.argv[3];
 // console.log(commandArg);
 // console.log(userInput);
 
-if (process.argv.length === 4) {
-    if (commandArg === "concert-this") {
-        concertThis(userInput);
-    }
 
-    else if (commandArg === "spotify-this-song") {
-        spotifyThisSong(userInput);
-    }
-
-    else if (commandArg === "movie-this") {
-        movieThis(userInput);
-    }
-
-    else {
-        console.log("Please enter an approprite input.");
-    }
+if (commandArg === "concert-this" && process.argv.length === 4) {
+    concertThis(userInput);
 }
 
+else if (commandArg === "spotify-this-song") {
+    if (userInput === undefined) {
+        userInput = "The Sign";
+    }
+
+    spotifyThisSong(userInput);
+}
+
+else if (commandArg === "movie-this") {
+    movieThis(userInput);
+}
 else if (commandArg === "do-what-it-says") {
     doWhatItSays();
 }
@@ -43,6 +51,8 @@ else if (commandArg === "do-what-it-says") {
 else {
     console.log("Please enter an approprite input.");
 }
+
+//  ------DO NOT TOUCH.
 
 // // axios OMDB API request
 // axios.get("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=trilogy").then(
@@ -125,7 +135,18 @@ function concertThis(artistBand) {
 // Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the node-spotify-api package.
 function spotifyThisSong(songName) {
     console.log(songName + " is the song name");
+    spotify.search({ type: 'track', query: userInput }, function(err, data) {
+        if (err) {
+          return console.log('Error occurred: ' + err);
+        }
+        for (let i = 0; i < data.tracks.items.length; i++) {
+            const element = data.tracks.items[i];
+            console.log(element);
+        }
 
+
+    //   console.log(data); 
+      });
 }
 
 // node liri.js movie-this '<movie name here>'
